@@ -15,3 +15,5 @@ Introductory project on scraping but also on the discovery of metadatas. (Cybers
     - url_base = "http://books.toscrape.com/" #Original website
     - url_ext = example.attrs['src'] #The extension you pulled earlier
     - full_url = url_base + url_ext #Combining first 2 variables to create a complete URL
+- request the full_url (check return value == status code should be 200)
+- store content and right it in a file
