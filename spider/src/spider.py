@@ -31,19 +31,27 @@ def combined_options(combined, url):
             else:
                 click.echo(f"Unknown Option: {c}")
                 
+def getdata(url):
+    r = requests.get(url)
+    return (r.text)
 
 def start_scraping(r, l, p, url):
     """A program for downloading files."""
-    click.echo(f"URL: {url}.")
-    if r and l is not None:
-        # Both -r and -l were provided with their respective arguments.
-        click.echo(f"Recursive download with depth {l} and download path {p}.")
-    elif r:
-        # Only -r was provided without -l.
-        click.echo(f"Recursive download with default depth and download path {p}.")
-    else:
-        # No -r provided.
-        click.echo(f"Downloading without recursion to path {p}.")
+    # click.echo(f"URL: {url}.")
+    # if r and l is not None:
+    #     # Both -r and -l were provided with their respective arguments.
+    #     click.echo(f"Recursive download with depth {l} and download path {p}.")
+    # elif r:
+    #     # Only -r was provided without -l.
+    #     click.echo(f"Recursive download with default depth and download path {p}.")
+    # else:
+    #     # No -r provided.
+    #     click.echo(f"Downloading without recursion to path {p}.")
+    
+    htmldata = getdata(url)  
+    soup = BeautifulSoup(htmldata, 'html.parser')  
+    for item in soup.find_all('img'): 
+        print(item['src'])
 
 
 @click.command()
