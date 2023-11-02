@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 
 import click
+import requests
+from bs4 import BeautifulSoup
 
 class Params:
     def __init__(self, url="", method="unoDepth", depth=5, path="./data/"):
