@@ -14,7 +14,7 @@ class Params:
         return f"URL: {self.url}, Method: {self.method}, Depth: {self.depth}"
 
 
-def combined_options(combined):
+def combined_options(combined, url):
     if combined:
         for c in combined:
             if c == 'r':
@@ -27,11 +27,12 @@ def combined_options(combined):
                 #handle -p
                 click.echo("Setting Download Path")
             else:
-                click.echo("Unknown Option: {c}")
+                click.echo(f"Unknown Option: {c}")
                 
 
-def start_scraping(r, l, p):
+def start_scraping(r, l, p, url):
     """A program for downloading files."""
+    click.echo(f"URL: {url}.")
     if r and l is not None:
         # Both -r and -l were provided with their respective arguments.
         click.echo(f"Recursive download with depth {l} and download path {p}.")
@@ -46,12 +47,17 @@ def start_scraping(r, l, p):
 @click.command()
 @click.option('-r', is_flag=True, help='Enable Recursive Download')
 @click.option('-l', type=int, help='Set Depth Of Recursive Download')
-@click.option('-p', type=str, prompt='Download Path', help='Set Download Path')
+@click.option('-p', type=str, help='Set Download Path')
 @click.option('-c', '--combined', type=str, help='Combined Options')
-def main(r, l, p, combined):
+@click.argument('url', type=str)
+def main(r, l, p, combined, url):
     click.echo("Welcome to fechScraping:")
-    combined_options(combined)
-    start_scraping(r, l, p)
+    #already handled by click
+    #if url is None:
+    #        click.echo("Invalid! Provide a URL.")
+    #        exit(1)
+    combined_options(combined, url)
+    start_scraping(r, l, p, url)
     
 
 if __name__ == '__main__':
