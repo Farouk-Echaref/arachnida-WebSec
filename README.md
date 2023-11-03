@@ -17,3 +17,10 @@ Introductory project on scraping but also on the discovery of metadatas. (Cybers
     - full_url = url_base + url_ext #Combining first 2 variables to create a complete URL
 - request the full_url (check return value == status code should be 200)
 - store content and right it in a file
+
+## download a file given by url and pathname
+- check if directory exiss, if not create it 
+- download the body of a response by chunk
+- get the size of the body
+- get filename
+- write to disk
