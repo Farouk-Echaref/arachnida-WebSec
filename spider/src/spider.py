@@ -17,18 +17,24 @@ class Params:
     def __str__(self):
         return f"URL: {self.url}, Method: {self.method}, Depth: {self.depth}"
 
-def download_img(url, path):
+def download_img(url, path, down_iter, extension):
     #check if directory exists, if not download it
     if not (os.path.exists(url) and os.path.isdir(path)):
         os.makedirs(path)
+    full_path = path + 'img' + str(down_iter) + extension
     #get the body of the HTTP response
     response = requests.get(url, stream=True)
     #status_code 200 => successful response 
     if (response.status_code == 200):
-
+        with open(full_path, 'wb') as output_file:
+            for chunk in response.iter_content(chunk_size=1024):
+                    if chunk:
+                        output_file.write(chunk)
+        print('Complete File Download!')
     else:
         print("Request failed with status code:", response.status_code)
         exit(1)
+    down_iter += 1
     
 
 def combined_options(combined, url):
