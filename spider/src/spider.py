@@ -1,9 +1,11 @@
 #!/usr/bin/python3
 
+import os
 import click
 import requests
 from bs4 import BeautifulSoup
 
+#in case i wanted to work with OOP, for now no need 
 class Params:
     def __init__(self, url="", method="unoDepth", depth=5, path="./data/"):
         self.url = url
@@ -15,6 +17,19 @@ class Params:
     def __str__(self):
         return f"URL: {self.url}, Method: {self.method}, Depth: {self.depth}"
 
+def download_img(url, path):
+    #check if directory exists, if not download it
+    if not (os.path.exists(url) and os.path.isdir(path)):
+        os.makedirs(path)
+    #get the body of the HTTP response
+    response = requests.get(url, stream=True)
+    #status_code 200 => successful response 
+    if (response.status_code == 200):
+
+    else:
+        print("Request failed with status code:", response.status_code)
+        exit(1)
+    
 
 def combined_options(combined, url):
     if combined:
@@ -31,9 +46,6 @@ def combined_options(combined, url):
             else:
                 click.echo(f"Unknown Option: {c}")
                 
-def getdata(url):
-    r = requests.get(url)
-    return (r.text)
 
 def start_scraping(r, l, p, url):
     """A program for downloading files."""
@@ -48,11 +60,15 @@ def start_scraping(r, l, p, url):
     #     # No -r provided.
     #     click.echo(f"Downloading without recursion to path {p}.")
     
-    htmldata = getdata(url)  
-    soup = BeautifulSoup(htmldata, 'html.parser')  
-    for item in soup.find_all('img'): 
-        print(item['src'])
-
+    r = requests.get(url)
+    if r.status_code == 200:
+        htmldata = r.text  
+        soup = BeautifulSoup(htmldata, 'html.parser')  
+        for item in soup.find_all('img'): 
+            print(item['src'])
+    else:
+        print("Request failed with status code:", response.status_code)
+        exit(1)
 
 @click.command()
 @click.option('-r', is_flag=True, help='Enable Recursive Download')
@@ -62,10 +78,6 @@ def start_scraping(r, l, p, url):
 @click.argument('url', type=str)
 def main(r, l, p, combined, url):
     click.echo("Welcome to fechScraping:")
-    #already handled by click
-    #if url is None:
-    #        click.echo("Invalid! Provide a URL.")
-    #        exit(1)
     combined_options(combined, url)
     start_scraping(r, l, p, url)
     
