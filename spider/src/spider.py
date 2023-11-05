@@ -77,15 +77,17 @@ def start_scraping(r, l, p, url):
         exit(1)
 
 @click.command()
-@click.option('-r', is_flag=True, help='Enable Recursive Download')
-@click.option('-l', type=int, help='Set Depth Of Recursive Download')
-@click.option('-p', type=str, help='Set Download Path')
-@click.option('-c', '--combined', type=str, help='Combined Options')
+@click.option('-r', '--recursive', is_flag=True, default=False, help='Enable Recursive Download')
+@click.option('-l', '--depth', type=int, default=5, help='Set Depth Of Recursive Download')
+@click.option('-p', '--path', type=str, default='./data/', help='Set Download Path')
+@click.option('-c', '--combined', is_flag=True, default=False, help='Combined Options')
 @click.argument('url', type=str)
 def main(r, l, p, combined, url):
     click.echo("Welcome to fechScraping:")
-    combined_options(combined, url)
+    # combined_options(combined, url)
+    # parse Urls
     start_scraping(r, l, p, url)
+    # download each URL alone
     
 
 if __name__ == '__main__':
