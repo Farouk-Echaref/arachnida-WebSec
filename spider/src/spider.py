@@ -66,15 +66,7 @@ def start_scraping(r, l, p, url):
     #     # No -r provided.
     #     click.echo(f"Downloading without recursion to path {p}.")
     
-    r = requests.get(url)
-    if r.status_code == 200:
-        htmldata = r.text  
-        soup = BeautifulSoup(htmldata, 'html.parser')  
-        for item in soup.find_all('img'): 
-            print(item['src'])
-    else:
-        print("Request failed with status code:", response.status_code)
-        exit(1)
+    parseURL(url, depth)
 
 @click.command()
 @click.option('-r', '--recursive', is_flag=True, default=False, help='Enable Recursive Download')
