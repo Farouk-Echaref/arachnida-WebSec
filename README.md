@@ -28,3 +28,5 @@ Introductory project on scraping but also on the discovery of metadatas. (Cybers
 ## recursive parsing of URLs
 - Recursive finding of URLs: parse all URLs and store them in a list (check for duplications, check for invalid ones...)
     - 
+
+## URL Validation for security concerns
