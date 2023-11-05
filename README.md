@@ -24,3 +24,7 @@ Introductory project on scraping but also on the discovery of metadatas. (Cybers
 - get the size of the body
 - get filename
 - write to disk
+
+## recursive parsing of URLs
+- Recursive finding of URLs: parse all URLs and store them in a list (check for duplications, check for invalid ones...)
+    - 
