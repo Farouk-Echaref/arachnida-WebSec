@@ -21,7 +21,7 @@ class Params:
     def __str__(self):
         return f"URL: {self.url}, Method: {self.method}, Depth: {self.depth}"
 
-def validateURL(URLs):
+def validateURLs(URLs):
     for url in URLs:
         isValid = validateURLs.url(url)
         if isValid:
@@ -66,7 +66,20 @@ def combined_options(combined, url):
                 
 #
 def findURLS(url):
-    
+    tempURLset = set()
+    response = requests.get(url)
+    if response.status_code == 200:
+        html = response.text
+        soup = BeautifulSoup(html, 'lxml')
+        # look for link tags in html (<a>)
+        for item in soup.find_all('a'):
+            tempURLset.add(item.get('href'))
+    else:
+        # maybe throw exception
+        print("Request failed with status code:", response.status_code)
+        exit(1)
+    validateURLs(tempURLset)
+    return (tempURLset)
 
 def recursiveFindURL(url, depth, currentDepth):
     # add the first url for the first time
