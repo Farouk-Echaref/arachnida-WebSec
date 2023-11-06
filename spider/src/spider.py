@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+import time
 import validators
 import os
 import click
@@ -7,7 +8,7 @@ import requests
 from bs4 import BeautifulSoup
 
 #set of unique URLs
-unique_urls = set()
+uniqueURLs = set()
 
 #in case i wanted to work with OOP, for now no need 
 class Params:
@@ -21,7 +22,7 @@ class Params:
     def __str__(self):
         return f"URL: {self.url}, Method: {self.method}, Depth: {self.depth}"
 
-def validateURLs(URLs):
+def validateURLs(URLs: set):
     for url in URLs:
         isValid = validateURLs.url(url)
         if isValid:
@@ -49,7 +50,7 @@ def download_img(url, path, down_iter, extension):
     down_iter += 1
     
 
-def combined_options(combined, url):
+def combined_options(combined: str, url: str):
     if combined:
         for c in combined:
             if c == 'r':
@@ -63,9 +64,18 @@ def combined_options(combined, url):
                 click.echo("Setting Download Path")
             else:
                 click.echo(f"Unknown Option: {c}")
-                
-#
-def findURLS(url):
+
+def loopURLs(URLs: set):
+    finalURLSet = set()
+    for url in URLs:
+        finalURLSet.update(findURLS(url))
+        #maybe sleep()
+        time.sleep(0.1)
+    return (finalURLSet)
+
+
+#extract urls from one link
+def findURLS(url: str):
     tempURLset = set()
     response = requests.get(url)
     if response.status_code == 200:
@@ -81,7 +91,7 @@ def findURLS(url):
     validateURLs(tempURLset)
     return (tempURLset)
 
-def recursiveFindURL(url, depth, currentDepth):
+def recursiveFindURL(url: str, depth: int, currentDepth: int):
     # add the first url for the first time
     newURLSet = set()
     newURLSet.add(url)
@@ -89,13 +99,13 @@ def recursiveFindURL(url, depth, currentDepth):
     if len(newURLSet) == 1:
         newURLSet.update(findURL(url))
     while currentDepth <= depth:
-        newURLSet.update(urlLooper(url))
+        newURLSet.update(loopURLs(newURLSet))
         validateURLs(newURLSet)
         currentDepth += 1
     return (newURLSet)
 
 
-def starScraping(r, l, p, url):
+def starScraping(r: bool, l: int, p: str, url: str):
     """A program for downloading files."""
     # click.echo(f"URL: {url}.")
     if r and l is not None:
@@ -107,8 +117,7 @@ def starScraping(r, l, p, url):
     elif r is False and l is True:
         # -r is false but -l is set.
         click.echo(f"Error")
-    unique_urls = recursiveFindURL(url, l, 0)
-    return (unique_urls)
+    return (recursiveFindURL(url, l, 0))
 
 @click.command()
 @click.option('-r', '--recursive', is_flag=True, default=False, help='Enable Recursive Download')
@@ -116,11 +125,11 @@ def starScraping(r, l, p, url):
 @click.option('-p', '--path', type=str, default='./data/', help='Set Download Path')
 @click.option('-c', '--combined', is_flag=True, default=False, help='Combined Options')
 @click.argument('url', type=str)
-def main(r, l, p, combined, url):
+def main(r: bool, l: int, p: str, combined: str, url: str):
     click.echo("Welcome to fechScraping:")
     # combined_options(combined, url)
     # parse Urls
-    startScraping(r, l, p, url)
+    uniqueURLs = startScraping(r, l, p, url)
 
     # download each URL alone
     
