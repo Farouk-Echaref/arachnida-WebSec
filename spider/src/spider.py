@@ -5,6 +5,9 @@ import click
 import requests
 from bs4 import BeautifulSoup
 
+#set of unique URLs
+unique_urls = set()
+
 #in case i wanted to work with OOP, for now no need 
 class Params:
     def __init__(self, url="", method="unoDepth", depth=5, path="./data/"):
@@ -52,21 +55,33 @@ def combined_options(combined, url):
             else:
                 click.echo(f"Unknown Option: {c}")
                 
+def recursiveFindURL(url, depth, currentDepth):
+    # add the first url for the first time
+    newURLSet = set()
+    newURLSet.add(url)
 
-def start_scraping(r, l, p, url):
+    if len(newURLSet) == 1:
+        newURLSet.update(findURL(url))
+    while currentDepth <= depth:
+        newURLSet.update(urlLooper(url))
+        validateURLs(newURLSet)
+        currentDepth += 1
+    return (newURLSet)
+
+
+def starScraping(r, l, p, url):
     """A program for downloading files."""
     # click.echo(f"URL: {url}.")
-    # if r and l is not None:
-    #     # Both -r and -l were provided with their respective arguments.
-    #     click.echo(f"Recursive download with depth {l} and download path {p}.")
-    # elif r:
-    #     # Only -r was provided without -l.
-    #     click.echo(f"Recursive download with default depth and download path {p}.")
-    # else:
-    #     # No -r provided.
-    #     click.echo(f"Downloading without recursion to path {p}.")
-    
-    parseURL(url, depth)
+    if r and l is not None:
+        # Both -r and -l were provided with their respective arguments.
+        click.echo(f"r is true and l is set to user value {l}")
+    elif r:
+        # Only -r was provided without -l.
+        click.echo(f"r is true but l is set to default value")
+    elif r is False and l is True:
+        # -r is false but -l is set.
+        click.echo(f"Error")
+    unique_urls = recursiveFindURL(url, l, 0)
 
 @click.command()
 @click.option('-r', '--recursive', is_flag=True, default=False, help='Enable Recursive Download')
@@ -78,7 +93,8 @@ def main(r, l, p, combined, url):
     click.echo("Welcome to fechScraping:")
     # combined_options(combined, url)
     # parse Urls
-    start_scraping(r, l, p, url)
+    startScraping(r, l, p, url)
+
     # download each URL alone
     
 
