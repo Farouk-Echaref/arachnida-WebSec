@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+import validators
 import os
 import click
 import requests
@@ -19,6 +20,14 @@ class Params:
     #Verify (test method)
     def __str__(self):
         return f"URL: {self.url}, Method: {self.method}, Depth: {self.depth}"
+
+def validateURL(URLs):
+    for url in URLs:
+        isValid = validateURLs.url(url)
+        if isValid:
+            continue
+        else :
+            URLs.remove(url)
 
 def download_img(url, path, down_iter, extension):
     #check if directory exists, if not download it
@@ -55,6 +64,10 @@ def combined_options(combined, url):
             else:
                 click.echo(f"Unknown Option: {c}")
                 
+#
+def findURLS(url):
+    
+
 def recursiveFindURL(url, depth, currentDepth):
     # add the first url for the first time
     newURLSet = set()
@@ -82,6 +95,7 @@ def starScraping(r, l, p, url):
         # -r is false but -l is set.
         click.echo(f"Error")
     unique_urls = recursiveFindURL(url, l, 0)
+    return (unique_urls)
 
 @click.command()
 @click.option('-r', '--recursive', is_flag=True, default=False, help='Enable Recursive Download')
