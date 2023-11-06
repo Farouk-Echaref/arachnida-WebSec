@@ -77,6 +77,14 @@ def loopURLs(URLs: set):
 #extract urls from one link
 def findURLS(url: str):
     tempURLset = set()
+    #in case of local HTML file
+    # with open(url, 'r') as html_file:
+    #     html = html_file.read()
+    #     soup = BeautifulSoup(html, 'lxml')
+    #     for item in soup.find_all('img'):
+    #         print(item['src'])
+    
+    #in case of working on a website
     response = requests.get(url)
     if response.status_code == 200:
         html = response.text
