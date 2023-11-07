@@ -35,19 +35,23 @@ def download_img(url, path, down_iter, extension):
     if not (os.path.exists(url) and os.path.isdir(path)):
         os.makedirs(path)
     full_path = path + 'img' + str(down_iter) + extension
-    #get the body of the HTTP response
-    response = requests.get(url, stream=True)
-    #status_code 200 => successful response 
-    if (response.status_code == 200):
-        with open(full_path, 'wb') as output_file:
-            for chunk in response.iter_content(chunk_size=1024):
-                    if chunk:
-                        output_file.write(chunk)
-        print('Complete File Download!')
-    else:
-        print("Request failed with status code:", response.status_code)
-        exit(1)
-    down_iter += 1
+    try:
+
+        #get the body of the HTTP response
+        response = requests.get(url, stream=True)
+        #status_code 200 => successful response 
+        if (response.status_code == 200):
+            with open(full_path, 'wb') as output_file:
+                for chunk in response.iter_content(chunk_size=1024):
+                        if chunk:
+                            output_file.write(chunk)
+            print('Complete File Download!')
+        else:
+            print("Request failed with status code:", response.status_code)
+            exit(1)
+        down_iter += 1
+    except Exception as e:
+        print(f'Skipping URL: {e}')
     
 
 def loopURLs(URLs: set):
@@ -70,17 +74,20 @@ def findURLS(url: str):
     #         print(item['src'])
 
     #in case of working on a website
-    response = requests.get(url)
-    if response.status_code == 200:
-        html = response.text
-        soup = BeautifulSoup(html, 'lxml')
-        # look for link tags in html (<a>)
-        for item in soup.find_all('a'):
-            tempURLset.add(item.get('href'))
-    else:
-        # maybe throw exception
-        print("Request failed with status code:", response.status_code)
-        exit(1)
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            html = response.text
+            soup = BeautifulSoup(html, 'lxml')
+            #  look for link tags in html (<a>)
+            for item in soup.find_all('a'):
+                tempURLset.add(item.get('href'))
+        else:
+            # maybe throw exception
+            print("Request failed with status code:", response.status_code)
+            exit(1)
+    except Exception as e:
+        print(f'Skipping URL: {e}')
     validateURLs(tempURLset)
     return (tempURLset)
 
