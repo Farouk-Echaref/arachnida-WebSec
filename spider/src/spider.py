@@ -1,28 +1,30 @@
+#!/usr/bin/python3
+
 import click
-from typing import Tuple
+from typing import List, Union, Optional
+from urllib.parse import urlparse, urljoin, ParseResult
 
-def getContentFromUrl(argument: Tuple[bool, int, str, str]) -> None:
+def getContentFromUrl(arg: List[Union[bool, int, str, str]]) -> bytes:
+    return b""  # Placeholder return value
+
+def urlChecking(arg: List[Union[bool, int, str, str]]) -> None:
+    result: ParseResult = urlparse(arg[3])
+    print(result)
+
+def downloadImagesRecursively(arg: List[Union[bool, int, str, str]]) -> None:
     return
 
-def urlChecking(argument: Tuple[bool, int, str, str]) -> None:
-    return
-
-def downloadImagesRecursively(arguments: Tuple[bool,int,str,str]) -> None:
-    return
-
-def startScraping(arguments: Tuple[bool,int,str,str]) -> None:
+def startScraping(arg: List[Union[bool, int, str, str]]) -> None:
     try:
-        urlChecking(arguments)
-        downloadImagesRecursively(arguments)
+        urlChecking(arg)
+        content: bytes = getContentFromUrl(arg)
+        downloadImagesRecursively(arg)
     except KeyboardInterrupt:
-        #some behaviour for the signal
-
-        #exi status code for SIGINT
+        # Some behavior for the signal
+        # Exit status code for SIGINT
         exit(130)
     except Exception as e:
         print(f"Caught General Exception: {e}")
-    
-
 
 @click.command()
 @click.option('-r', is_flag=True, default=False, help='Enable Recursive Download')
@@ -31,8 +33,8 @@ def startScraping(arguments: Tuple[bool,int,str,str]) -> None:
 @click.argument('url', type=str)
 def main(r: bool, l: int, p: str, url: str) -> None:
     click.echo('Spider has started crawling: ')
-    arguments: Tuple[bool, int, str, str] = (r, l, p, url)
-    startScraping(arguments)
+    arg: List[bool, int, str, str] = [r, l, p, url]
+    startScraping(arg)
 
 if __name__ == '__main__':
     main()
