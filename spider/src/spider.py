@@ -10,6 +10,15 @@ def getContentFromUrl(arg: List[Union[bool, int, str, str]]) -> bytes:
 def urlChecking(arg: List[Union[bool, int, str, str]]) -> None:
     result: ParseResult = urlparse(arg[3])
     print(result)
+    if result.scheme == '':
+        arg[3] = "http://" + arg[3]
+        print(arg[3])
+        urlChecking(arg)
+    elif result.netloc == '':
+        raise Exception('No URL Netloc')
+    elif (result.scheme != "http" and result.scheme != "https") :
+        print(arg[3])
+        raise Exception('Invalid URL')
 
 def downloadImagesRecursively(arg: List[Union[bool, int, str, str]]) -> None:
     return
@@ -33,7 +42,7 @@ def startScraping(arg: List[Union[bool, int, str, str]]) -> None:
 @click.argument('url', type=str)
 def main(r: bool, l: int, p: str, url: str) -> None:
     click.echo('Spider has started crawling: ')
-    arg: List[bool, int, str, str] = [r, l, p, url]
+    arg: List[Union[bool, int, str, str]] = [r, l, p, url]
     startScraping(arg)
 
 if __name__ == '__main__':
