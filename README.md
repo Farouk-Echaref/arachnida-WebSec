@@ -30,3 +30,5 @@ Introductory project on scraping but also on the discovery of metadatas. (Cybers
     - 
 
 ## URL Validation for security concerns
+
+## partial links issues
