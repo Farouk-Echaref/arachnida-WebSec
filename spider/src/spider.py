@@ -1,7 +1,27 @@
 import click
-from typing import List,Union
+from typing import Tuple
 
-def startScraping(arguments: List[Union[bool,int,str,str]]) -> None:
+def getContentFromUrl(argument: Tuple[bool, int, str, str]) -> None:
+    return
+
+def urlChecking(argument: Tuple[bool, int, str, str]) -> None:
+    return
+
+def downloadImagesRecursively(arguments: Tuple[bool,int,str,str]) -> None:
+    return
+
+def startScraping(arguments: Tuple[bool,int,str,str]) -> None:
+    try:
+        urlChecking(arguments)
+        downloadImagesRecursively(arguments)
+    except KeyboardInterrupt:
+        #some behaviour for the signal
+
+        #exi status code for SIGINT
+        exit(130)
+    except Exception as e:
+        print(f"Caught General Exception: {e}")
+    
 
 
 @click.command()
@@ -11,7 +31,7 @@ def startScraping(arguments: List[Union[bool,int,str,str]]) -> None:
 @click.argument('url', type=str)
 def main(r: bool, l: int, p: str, url: str) -> None:
     click.echo('Spider has started crawling: ')
-    arguments: List[Union[bool, int, str, str]] = [r, l, p, url]
+    arguments: Tuple[bool, int, str, str] = (r, l, p, url)
     startScraping(arguments)
 
 if __name__ == '__main__':
