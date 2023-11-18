@@ -2,11 +2,12 @@
 
 import os
 import click
+import requests
 from typing import List, Union, Optional
 from urllib.parse import urlparse, urljoin, ParseResult
+from urllib import robotparser
 
-def getContentFromUrl(arg: List[Union[bool, int, str, str]]) -> bytes:
-    return b""  # Placeholder return value
+USER_AGENT = "SpiderBot"
 
 def urlChecking(arg: List[Union[bool, int, str, str]]) -> None:
     result: ParseResult = urlparse(arg[3])
@@ -21,9 +22,6 @@ def urlChecking(arg: List[Union[bool, int, str, str]]) -> None:
         print(arg[3])
         raise Exception('Invalid URL')
 
-def downloadImagesRecursively(arg: List[Union[bool, int, str, str]]) -> None:
-    return
-
 def mkdirSave(arg: List[Union[bool, int, str, str]]) -> None:
     if (os.path.exists(arg[2]) == False):
         print("Creating Directory ...")
@@ -32,6 +30,22 @@ def mkdirSave(arg: List[Union[bool, int, str, str]]) -> None:
         raise Exception("Invalid Diretory.")
     elif (os.access(arg[2], os.R_OK) == False or os.access(arg[2], os.W_OK) == False or os.access(arg[2], os.X_OK) == False):
         raise Exception("Permission Denied")
+    return
+
+def getContentFromUrl(arg: List[Union[bool, int, str, str]]) -> bytes:
+    pureUrl: str = urlparse(arg[3]).scheme + urlparse(arg[3]).netloc
+    robotUrl = pureUrl + '/robots.txt'
+    if(requests.get(robotUrl).status_code == 200):
+        pathToCheck = urlparse(arg[3]).path
+        # class to parse robot file
+        parseRobot = robotparser.RobotFileParser()
+        parseRobot.set_url(robotUrl)
+        parseRobot.read()
+        parseRobot.can_fetch(USER_AGENT, pathToCheck)
+
+    return b""  # Placeholder return value
+
+def downloadImagesRecursively(arg: List[Union[bool, int, str, str]]) -> None:
     return
 
 def startScraping(arg: List[Union[bool, int, str, str]]) -> None:
