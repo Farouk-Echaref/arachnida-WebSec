@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+import os
 import click
 from typing import List, Union, Optional
 from urllib.parse import urlparse, urljoin, ParseResult
@@ -23,9 +24,20 @@ def urlChecking(arg: List[Union[bool, int, str, str]]) -> None:
 def downloadImagesRecursively(arg: List[Union[bool, int, str, str]]) -> None:
     return
 
+def mkdirSave(arg: List[Union[bool, int, str, str]]) -> None:
+    if (os.path.exists(arg[2]) == False):
+        print("Creating Directory ...")
+        os.mkdir(arg[2])
+    elif (os.path.isdir(arg[2]) == False):
+        raise Exception("Invalid Diretory.")
+    elif (os.access(arg[2], os.R_OK) == False or os.access(arg[2], os.W_OK) == False or os.access(arg[2], os.X_OK) == False):
+        raise Exception("Permission Denied")
+    return
+
 def startScraping(arg: List[Union[bool, int, str, str]]) -> None:
     try:
         urlChecking(arg)
+        mkdirSave(arg)
         content: bytes = getContentFromUrl(arg)
         downloadImagesRecursively(arg)
     except KeyboardInterrupt:
