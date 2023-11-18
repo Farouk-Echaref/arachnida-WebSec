@@ -33,7 +33,7 @@ def mkdirSave(arg: List[Union[bool, int, str, str]]) -> None:
     return
 
 def getContentFromUrl(arg: List[Union[bool, int, str, str]]) -> bytes:
-    pureUrl: str = urlparse(arg[3]).scheme + urlparse(arg[3]).netloc
+    pureUrl: str = urlparse(arg[3]).scheme + "://" + urlparse(arg[3]).netloc
     robotUrl = pureUrl + '/robots.txt'
     if(requests.get(robotUrl).status_code == 200):
         pathToCheck = urlparse(arg[3]).path
@@ -41,9 +41,15 @@ def getContentFromUrl(arg: List[Union[bool, int, str, str]]) -> bytes:
         parseRobot = robotparser.RobotFileParser()
         parseRobot.set_url(robotUrl)
         parseRobot.read()
-        parseRobot.can_fetch(USER_AGENT, pathToCheck)
-
-    return b""  # Placeholder return value
+        check = parseRobot.can_fetch(USER_AGENT, pathToCheck)
+        if (check == False):
+            raise Exception("Robots.txt forbids path: ", pathToCheck)
+        elif (check == True):
+            print("Robots.txt allows path: ", pathToCheck)
+        response = requests.get(arg[3])
+        response.raise_for_status()
+        return (response.content)
+    return (666)
 
 def downloadImagesRecursively(arg: List[Union[bool, int, str, str]]) -> None:
     return
@@ -53,6 +59,8 @@ def startScraping(arg: List[Union[bool, int, str, str]]) -> None:
         urlChecking(arg)
         mkdirSave(arg)
         content: bytes = getContentFromUrl(arg)
+        if (content == 666):
+            print("Error requesting the URL")
         downloadImagesRecursively(arg)
     except KeyboardInterrupt:
         # Some behavior for the signal
