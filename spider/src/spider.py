@@ -8,6 +8,8 @@ from urllib.parse import urlparse, urljoin, ParseResult
 from urllib import robotparser
 
 USER_AGENT = "SpiderBot"
+EXT = [".jpg", ".jpeg", ".bmp", ".png", ".gif"]
+storeURLS: set = set()
 
 def urlChecking(arg: List[Union[bool, int, str, str]]) -> None:
     result: ParseResult = urlparse(arg[3])
@@ -58,9 +60,9 @@ def startScraping(arg: List[Union[bool, int, str, str]]) -> None:
     try:
         urlChecking(arg)
         mkdirSave(arg)
-        content: bytes = getContentFromUrl(arg)
-        if (content == 666):
-            print("Error requesting the URL")
+        # content: bytes = getContentFromUrl(arg)
+        # if (content == 666):
+        #     print("Error requesting the URL")
         downloadImagesRecursively(arg)
     except KeyboardInterrupt:
         # Some behavior for the signal
