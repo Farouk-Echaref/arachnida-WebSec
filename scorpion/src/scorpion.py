@@ -15,7 +15,7 @@ images = [proto1_img, proto2_img]
 # print(images[0].list_all())
 # print(images[1])
 
-#
+#check if the images contain EXIF metadata
 for index, img in enumerate(images):
     # print(img)
     if img.has_exif:
@@ -23,3 +23,13 @@ for index, img in enumerate(images):
     else :
         status = "Does not contain EXIF Data"
     print(f"Image{index}: {status}")
+
+#store available tags
+image_members = []
+for image in images:
+    image_members.append(dir(image))
+
+#print available tags
+for index, image_member_list in enumerate(image_members):
+    print(f"Image {index} contains {len(image_member_list)} members:")
+    print(f"{image_member_list}\n")
