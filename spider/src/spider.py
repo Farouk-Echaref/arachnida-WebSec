@@ -32,7 +32,7 @@ def urlChecking(arg: List[Union[bool, int, str, str]]) -> None:
     elif (result.scheme != "http" and result.scheme != "https"):
         raise Exception('Invalid URL')
 
-def getContentFromUrl(url: str) -> bytes:
+def getContentFromUrl(url: str) -> Optional[bytes]:
     pureUrl: str = urlparse(url).scheme + "://" + urlparse(url).netloc
     robotUrl: str = pureUrl + '/robots.txt'
     if(requests.get(robotUrl).status_code == 200):
@@ -51,10 +51,7 @@ def getContentFromUrl(url: str) -> bytes:
         return (response.content)
     return (666)
 
-def retrieveNewLinks():
-    return
-
-def getFullUrl(url: str, path: str):
+def getFullUrl(url: str, path: str) -> str:
     parsedUrl = urlparse(path)
 
     # If the path doesn't have a netloc (network location), 
@@ -90,6 +87,24 @@ def imagesDownloader(arg: List[Union[bool, int, str, str]], soup: BeautifulSoup,
         print(fullImgUrl)
         downloadOneImg(arg, fullImgUrl)
 
+def retrieveNewLinks(incomingUrl: str, soup: BeautifulSoup) -> set[str]:
+    storeAnchor: set = set()
+    anchorTags: ResultSet = soup.find_all('a')
+    for tag in anchorTags:
+        href: str = tag.get('href')
+        if not href:
+            continue
+        newLink = getFullUrl(incomingUrl, href)
+        if newLink in storeAnchor or newLink == incomingUrl:
+            continue
+        #Internal Links Filtering/domain restriction
+        checkbase: ParseResult = urlparse(incomingUrl)
+        checHref: ParseResult = urlparse(newLink)
+        if checkbase.netloc != checHref.netloc:
+            continue
+        storeAnchor.add(newLink)
+    return (storeAnchor)
+
 def recursiveImageDownloader(arg: List[Union[bool, int, str, str]], current_level: int, incomingUrl: str) -> None:
     # recursive base condition
     if current_level >= arg[1]:
@@ -106,7 +121,7 @@ def recursiveImageDownloader(arg: List[Union[bool, int, str, str]], current_leve
         # print(soup)
         imagesDownloader(arg, soup, incomingUrl)
         if current_level + 1 < arg[1]:
-            newLinks: set[str] = retrieveNewLinks()
+            newLinks: set[str] = retrieveNewLinks(incomingUrl, soup)
             for link in newLinks:
                 recursiveImageDownloader(arg, current_level + 1, link)
     except Exception as e:
