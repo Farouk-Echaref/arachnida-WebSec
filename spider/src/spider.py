@@ -68,6 +68,16 @@ def getFullUrl(url: str, path: str):
     return parsedUrl.scheme + '://' + parsedUrl.netloc + parsedUrl.path
 
 def downloadOneImg(arg: List[Union[bool, int, str, str]], fullImgUrl: str) -> None:
+    imgName: str = os.path.basename(fullImgUrl)
+    saveFile: str = os.path.join(arg[2], imgName)
+    try:
+        if os.path.exists(saveFile):
+            raise Exception ('Image Duplicate => Skip')
+        imgContent: bytes = getContentFromUrl(fullImgUrl)
+        with open(saveFile, 'wb') as image:
+            image.write(imgContent)
+    except Exception as e:
+        print(f"Error while downloading image: {e}")
     return
 
 def imagesDownloader(arg: List[Union[bool, int, str, str]], soup: BeautifulSoup, incomingUrl: str) -> None:
