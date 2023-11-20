@@ -1,13 +1,12 @@
 #!/usr/bin/python3
 
-from colorama import Fore, Back, Style, init
+banner = """
+   _____       _     __          ______          __  
+  / ___/____  (_)___/ /__  _____/ ____/__  _____/ /_ 
+  \__ \/ __ \/ / __  / _ \/ ___/ /_  / _ \/ ___/ __ \
+ ___/ / /_/ / / /_/ /  __/ /  / __/ /  __/ /__/ / / /
+/____/ .___/_/\__,_/\___/_/  /_/    \___/\___/_/ /_/ 
+    /_/                                              """
 
-# Initialize colorama
-init(autoreset=True)
+print(banner)
 
-def colorful_header():
-    print(f"{Fore.CYAN}{Back.BLACK}{Style.BRIGHT}=== Python Bot ==={Style.RESET_ALL}")
-
-# Example usage
-colorful_header()
-print("Hello, this is your Python bot in action!")
