@@ -33,3 +33,10 @@ for image in images:
 for index, image_member_list in enumerate(image_members):
     print(f"Image {index} contains {len(image_member_list)} members:")
     print(f"{image_member_list}\n")
+
+#Make and Model of the device used to take the photo
+for index, image in enumerate(images):
+    print(f"Device Information - Image => {index}: ")
+    print("----------------------------")
+    print(f"Make: {image.make}")
+    print(f"Model: {image.model}\n")
