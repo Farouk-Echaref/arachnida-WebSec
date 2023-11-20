@@ -55,3 +55,10 @@ for index, image in enumerate(images):
     print(f"Date/time taken - Image {index}")
     print("-------------------------")
     print(f"{image.get('datetime_original','Not Specified')}.{image.get('subsec_time_original', 'Not Specified')} {image.get('offset_time', 'Not Specified')}\n")
+
+#Getting the photo’s GPS coordinates
+for index, image in enumerate(images):
+    print(f"Coordinates - Image {index}: ")
+    print("---------------------")
+    print(f"Latitude: {image.get('gps_latitude', 'Lat Unknown')} {image.get('gps_latitude_ref', 'LatRef Unknown')}")
+    print(f"Longitude: {image.get('gps_longitude', 'Lon Unknown')} {image.get('gps_longitude_ref', 'LonRef Unknown')}\n")
