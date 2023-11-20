@@ -40,3 +40,18 @@ for index, image in enumerate(images):
     print("----------------------------")
     print(f"Make: {image.make}")
     print(f"Model: {image.model}\n")
+
+#Additional Information
+for index, image in enumerate(images):
+    print(f"Lens and OS - Image {index}")
+    print("---------------------")
+    print(f"Lens make: {image.get('lens_make', 'Unknown')}")
+    print(f"Lens model: {image.get('lens_model', 'Unknown')}")
+    print(f"Lens specification: {image.get('lens_specification', 'Unknown')}")
+    print(f"OS version: {image.get('software', 'Unknown')}\n")
+
+#Date and time when the photo was taken
+for index, image in enumerate(images):
+    print(f"Date/time taken - Image {index}")
+    print("-------------------------")
+    print(f"{image.get('datetime_original','Not Specified')}.{image.get('subsec_time_original', 'Not Specified')} {image.get('offset_time', 'Not Specified')}\n")
