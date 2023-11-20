@@ -2,6 +2,7 @@
 
 import os
 import click
+import random
 import requests
 from bs4 import BeautifulSoup, ResultSet
 from typing import List, Union, Optional
@@ -33,6 +34,15 @@ def urlChecking(arg: List[Union[bool, int, str, str]]) -> None:
         raise Exception('Invalid URL')
 
 def getContentFromUrl(url: str) -> Optional[bytes]:
+    user_agents = [ 
+	'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36', 
+	'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36', 
+	'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36', 
+	'Mozilla/5.0 (iPhone; CPU iPhone OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148', 
+	'Mozilla/5.0 (Linux; Android 11; SM-G960U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.72 Mobile Safari/537.36' 
+] 
+    user_agent = random.choice(user_agents) 
+    headers = {'User-Agent': user_agent} 
     pureUrl: str = urlparse(url).scheme + "://" + urlparse(url).netloc
     robotUrl: str = pureUrl + '/robots.txt'
     if(requests.get(robotUrl).status_code == 200):
@@ -46,7 +56,7 @@ def getContentFromUrl(url: str) -> Optional[bytes]:
             raise Exception("Robots.txt forbids path: ", pathToCheck)
         elif (check == True):
             print("Robots.txt allows path: ", pathToCheck)
-        response: response = requests.get(url)
+        response: response = requests.get(url, headers=headers)
         response.raise_for_status()
         return (response.content)
     return (666)
