@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 
+import pycountry
 from exif import Image
+import reverse_geocoder as rg
 
 # load image data
 with open("./proto1.jpg", "rb") as proto1_file:
@@ -57,8 +59,39 @@ for index, image in enumerate(images):
     print(f"{image.get('datetime_original','Not Specified')}.{image.get('subsec_time_original', 'Not Specified')} {image.get('offset_time', 'Not Specified')}\n")
 
 #Getting the photo’s GPS coordinates
+def format_dms_coordinates(coordinates):
+    return f"{coordinates[0]}° {coordinates[1]}\' {coordinates[2]}\""
+
+def dms_coordinates_to_dd_coordinates(coordinates, coordinates_ref):
+    decimal_degrees = coordinates[0] + \
+                      coordinates[1] / 60 + \
+                      coordinates[2] / 3600
+    
+    if coordinates_ref == "S" or coordinates_ref == "W":
+        decimal_degrees = -decimal_degrees
+    
+    return decimal_degrees
+
 for index, image in enumerate(images):
-    print(f"Coordinates - Image {index}: ")
+    print(f"Coordinates - Image {index}")
     print("---------------------")
-    print(f"Latitude: {image.get('gps_latitude', 'Lat Unknown')} {image.get('gps_latitude_ref', 'LatRef Unknown')}")
-    print(f"Longitude: {image.get('gps_longitude', 'Lon Unknown')} {image.get('gps_longitude_ref', 'LonRef Unknown')}\n")
+    if hasattr(image, "gps_latitude") and hasattr(image, "gps_longitude"):
+        # Access attributes using getattr or directly
+        print(f"Latitude (DMS): {format_dms_coordinates(getattr(image, 'gps_latitude'))}{getattr(image, 'gps_latitude_ref')}")
+        print(f"Longitude (DMS): {format_dms_coordinates(getattr(image, 'gps_longitude'))}{getattr(image, 'gps_longitude_ref')}")
+        print(f"Latitude (DD): {dms_coordinates_to_dd_coordinates(getattr(image, 'gps_latitude'), getattr(image, 'gps_latitude_ref'))}")
+        print(f"Longitude (DD): {dms_coordinates_to_dd_coordinates(getattr(image, 'gps_longitude'), getattr(image, 'gps_longitude_ref'))}")
+
+def draw_map_for_location(latitude, latitude_ref, longitude, longitude_ref):
+    
+    decimal_latitude = dms_coordinates_to_dd_coordinates(latitude, latitude_ref)
+    decimal_longitude = dms_coordinates_to_dd_coordinates(longitude, longitude_ref)
+    url = f"https://www.google.com/maps?q={decimal_latitude},{decimal_longitude}"
+    print("Access Location: ", url)
+
+for index, image in enumerate(images):
+    if hasattr(image, "gps_latitude") and hasattr(image, "gps_longitude"):
+        draw_map_for_location(getattr(image, 'gps_latitude'), 
+                          getattr(image, 'gps_latitude_ref'), 
+                          getattr(image, 'gps_longitude'),
+                          getattr(image, 'gps_longitude_ref'))
