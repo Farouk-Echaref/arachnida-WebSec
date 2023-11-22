@@ -95,3 +95,15 @@ for index, image in enumerate(images):
                           getattr(image, 'gps_latitude_ref'), 
                           getattr(image, 'gps_longitude'),
                           getattr(image, 'gps_longitude_ref'))
+
+#finding country and city of where the pictures was taken
+for index, image in enumerate(images):
+    print(f"Location info - Image {index}")
+    print("-----------------------")
+    if hasattr(image, "gps_latitude") and hasattr(image, "gps_longitude"):
+        decimal_latitude = dms_coordinates_to_dd_coordinates(getattr(image, 'gps_latitude'), getattr(image, 'gps_latitude_ref'))
+        decimal_longitude = dms_coordinates_to_dd_coordinates(getattr(image, 'gps_longitude'), getattr(image, 'gps_longitude_ref'))
+        coordinates = (decimal_latitude, decimal_longitude)
+        location_info = rg.search(coordinates)[0]
+        location_info['country'] = pycountry.countries.get(alpha_2=location_info['cc'])
+        print(f"{location_info}\n")
