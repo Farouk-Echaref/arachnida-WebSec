@@ -107,3 +107,5 @@ for index, image in enumerate(images):
         location_info = rg.search(coordinates)[0]
         location_info['country'] = pycountry.countries.get(alpha_2=location_info['cc'])
         print(f"{location_info}\n")
+
+#Update EXIF Data
